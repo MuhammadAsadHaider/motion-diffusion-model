@@ -218,7 +218,8 @@ class Text2MotionDatasetV2(data.Dataset):
         with cs.open(split_file, 'r') as f:
             for line in f.readlines():
                 id_list.append(line.strip())
-        # id_list = id_list[:200]
+        # comment this for full data
+        id_list = id_list[:200]
 
         new_name_list = []
         length_list = []
