@@ -14,7 +14,7 @@
             "env": {
                 "PYTHONPATH": "/mnt/e/UCF Masters/Independent Study/motion-diffusion-model"
             },
-            "args": ["--save_dir", "save/my_kit_trans_enc_512", "--dataset", "kit", "--overwrite"]
+            "args": ["--save_dir", "save/my_h2s_trans_enc_512", "--dataset", "h2s", "--overwrite"]
         }
     ]
 }
