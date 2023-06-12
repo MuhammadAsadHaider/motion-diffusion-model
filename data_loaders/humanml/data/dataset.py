@@ -226,7 +226,7 @@ class Text2MotionDatasetV2(data.Dataset):
         for name in tqdm(id_list):
             try:
                 motion = np.load(pjoin(opt.motion_dir, name + '.npy'))
-                if (len(motion)) < min_motion_len or (len(motion) >= 200):
+                if (len(motion)) < min_motion_len or (len(motion) >= 300):
                     continue
                 text_data = []
                 flag = False
@@ -780,3 +780,7 @@ class HumanML3D(data.Dataset):
 class KIT(HumanML3D):
     def __init__(self, mode, datapath='./dataset/kit_opt.txt', split="train", **kwargs):
         super(KIT, self).__init__(mode, datapath, split, **kwargs)
+
+class H2S(HumanML3D):
+    def __init__(self, mode, datapath='./dataset/h2s_opt.txt', split="train", **kwargs):
+        super(H2S, self).__init__(mode, datapath, split, **kwargs)
