@@ -26,7 +26,9 @@ def main():
     name = os.path.basename(os.path.dirname(args.model_path))
     niter = os.path.basename(args.model_path).replace('model', '').replace('.pt', '')
     max_frames = 196 if args.dataset in ['kit', 'humanml'] else 60
+    max_frames = 250 if args.dataset in ['h2s'] else 60
     fps = 12.5 if args.dataset == 'kit' else 20
+    fps = 24 if args.dataset == 'h2s' else fps
     n_frames = min(max_frames, int(args.motion_length*fps))
     is_using_data = not any([args.input_text, args.text_prompt, args.action_file, args.action_name])
     dist_util.setup_dist(args.device)
@@ -102,6 +104,10 @@ def main():
     all_lengths = []
     all_text = []
 
+    if os.path.exists(out_path):
+        shutil.rmtree(out_path)
+    os.makedirs(out_path)
+
     for rep_i in range(args.num_repetitions):
         print(f'### Sampling [repetitions #{rep_i}]')
 
@@ -124,6 +130,12 @@ def main():
             noise=None,
             const_noise=False,
         )
+
+        if args.dataset == 'h2s':
+            sample = data.dataset.t2m_dataset.inv_transform(sample.cpu().permute(0, 2, 3, 1)).float()
+            np.save(os.path.join(out_path, f'sample_{rep_i}.npy'), sample.cpu().numpy())
+            continue
+
 
         # Recover XYZ *positions* from HumanML3D vector representation
         if model.data_rep == 'hml_vec':
@@ -150,14 +162,17 @@ def main():
         print(f"created {len(all_motions) * args.batch_size} samples")
 
 
+    if args.dataset == 'h2s':
+        abs_path = os.path.abspath(out_path)
+        print(f'[Done] Results are at [{abs_path}]')
+        return
+
     all_motions = np.concatenate(all_motions, axis=0)
     all_motions = all_motions[:total_num_samples]  # [bs, njoints, 6, seqlen]
     all_text = all_text[:total_num_samples]
     all_lengths = np.concatenate(all_lengths, axis=0)[:total_num_samples]
 
-    if os.path.exists(out_path):
-        shutil.rmtree(out_path)
-    os.makedirs(out_path)
+    
 
     npy_path = os.path.join(out_path, 'results.npy')
     print(f"saving results file to [{npy_path}]")
