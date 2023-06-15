@@ -73,7 +73,7 @@ def get_opt(opt_path, device):
         opt.motion_dir = pjoin(opt.data_root, 'features')
         opt.text_dir = pjoin(opt.data_root, 'texts')
         opt.joints_num = 42
-        opt.dim_pose = 126
+        opt.dim_pose = 1662
         opt.max_motion_length = 250
     else:
         raise KeyError('Dataset not recognized')
