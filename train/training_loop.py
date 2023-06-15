@@ -126,6 +126,7 @@ class TrainLoop:
 
     def run_loop(self):
         print(self.num_epochs)
+        temp = 0
         for epoch in range(self.num_epochs):
             print(f'Starting epoch {epoch}')
             for idx in tqdm(range(len(self.data))):
@@ -133,6 +134,7 @@ class TrainLoop:
                     motion, cond = self.data[idx]
                 except:
                     continue
+
                 if not (not self.lr_anneal_steps or self.step + self.resume_step < self.lr_anneal_steps):
                     break
 
@@ -140,6 +142,7 @@ class TrainLoop:
                 cond['y'] = {key: val.to(self.device) if torch.is_tensor(val) else val for key, val in cond['y'].items()}
 
                 self.run_step(motion, cond)
+                temp += 1
                 if self.step % self.log_interval == 0:
                     for k,v in logger.get_current().name2val.items():
                         if k == 'loss':
@@ -162,6 +165,7 @@ class TrainLoop:
                 self.step += 1
             if not (not self.lr_anneal_steps or self.step + self.resume_step < self.lr_anneal_steps):
                 break
+        print('temp: ', temp)
         # Save the last checkpoint if it wasn't already saved.
         if (self.step - 1) % self.save_interval != 0:
             self.save()
