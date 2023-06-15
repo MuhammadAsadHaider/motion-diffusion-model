@@ -315,7 +315,10 @@ class Text2MotionDatasetV2(data.Dataset):
         pos_one_hots = []
         word_embeddings = []
         for token in tokens:
-            word_emb, pos_oh = self.w_vectorizer[token]
+            try:
+                word_emb, pos_oh = self.w_vectorizer[token]
+            except:
+                word_emb, pos_oh = self.w_vectorizer['unk/OTHER']
             pos_one_hots.append(pos_oh[None, :])
             word_embeddings.append(word_emb[None, :])
         pos_one_hots = np.concatenate(pos_one_hots, axis=0)
