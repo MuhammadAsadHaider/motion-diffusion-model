@@ -125,14 +125,13 @@ class TrainLoop:
             self.opt.load_state_dict(state_dict)
 
     def run_loop(self):
+        print(self.num_epochs)
         for epoch in range(self.num_epochs):
             print(f'Starting epoch {epoch}')
-            failed = 0
             for idx in tqdm(range(len(self.data))):
                 try:
                     motion, cond = self.data[idx]
                 except:
-                    failed += 1
                     continue
                 if not (not self.lr_anneal_steps or self.step + self.resume_step < self.lr_anneal_steps):
                     break
@@ -163,7 +162,6 @@ class TrainLoop:
                 self.step += 1
             if not (not self.lr_anneal_steps or self.step + self.resume_step < self.lr_anneal_steps):
                 break
-            print(f'Failed to load {failed} motions')
         # Save the last checkpoint if it wasn't already saved.
         if (self.step - 1) % self.save_interval != 0:
             self.save()
