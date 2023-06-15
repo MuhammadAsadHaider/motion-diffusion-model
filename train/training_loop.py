@@ -129,12 +129,10 @@ class TrainLoop:
         temp = 0
         for epoch in range(self.num_epochs):
             print(f'Starting epoch {epoch}')
-            for idx in tqdm(range(len(self.data))):
-                try:
-                    motion, cond = self.data[idx]
-                except:
+            for data in self.data:
+                if data is None:
                     continue
-
+                motion, cond = data
                 if not (not self.lr_anneal_steps or self.step + self.resume_step < self.lr_anneal_steps):
                     break
 
