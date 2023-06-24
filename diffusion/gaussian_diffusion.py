@@ -201,17 +201,36 @@ class GaussianDiffusion:
     def masked_l2(self, a, b, mask):
         # assuming a.shape == b.shape == bs, J, Jdim, seqlen
         # assuming mask.shape == bs, 1, 1, seqlen
-        print(mask.shape)
-        raise Exception("Done")
+        a_pose = a[:, :132, :, :]
+        a_right_hand = a[:, 132:132+63, :, :]
+        a_left_hand = a[:, 132+63:132+63+63, :, :]
+        a_face = a[:, 132+63+63:, :, :]
+        b_pose = b[:, :132, :, :]
+        b_right_hand = b[:, 132:132+63, :, :]
+        b_left_hand = b[:, 132+63:132+63+63, :, :]
+        b_face = b[:, 132+63+63:, :, :]
+        pose_loss = self.l2_loss(a_pose, b_pose)
+        right_hand_loss = self.l2_loss(a_right_hand, b_right_hand)
+        left_hand_loss = self.l2_loss(a_left_hand, b_left_hand)
+        face_loss = self.l2_loss(a_face, b_face)
+        # normalize losses based on number of keypoints
+        pose_loss = (pose_loss / 132) * 100
+        right_hand_loss = (right_hand_loss / 63) * 100
+        left_hand_loss = (left_hand_loss / 63) * 100 
+        face_loss = (face_loss / 1404) * 100
+        loss = torch.concat((pose_loss, right_hand_loss, left_hand_loss, face_loss), dim=1)
+        loss = sum_flat(loss * mask.float())  # gives \sigma_euclidean over unmasked elements
+        n_entries = a.shape[1] * a.shape[2]
+        non_zero_elements = sum_flat(mask) * n_entries
+        mse_loss_val = loss / non_zero_elements
+        print('new', mse_loss_val)
         loss = self.l2_loss(a, b)
         loss = sum_flat(loss * mask.float())  # gives \sigma_euclidean over unmasked elements
         n_entries = a.shape[1] * a.shape[2]
         non_zero_elements = sum_flat(mask) * n_entries
-        # print('mask', mask.shape)
-        # print('non_zero_elements', non_zero_elements)
-        # print('loss', loss)
         mse_loss_val = loss / non_zero_elements
-        # print('mse_loss_val', mse_loss_val)
+        print('old', mse_loss_val)
+        raise Exception('stop')
         return mse_loss_val
 
 
