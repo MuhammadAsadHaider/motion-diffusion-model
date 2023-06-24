@@ -223,14 +223,6 @@ class GaussianDiffusion:
         n_entries = a.shape[1] * a.shape[2]
         non_zero_elements = sum_flat(mask) * n_entries
         mse_loss_val = loss / non_zero_elements
-        print('new', mse_loss_val)
-        loss = self.l2_loss(a, b)
-        loss = sum_flat(loss * mask.float())  # gives \sigma_euclidean over unmasked elements
-        n_entries = a.shape[1] * a.shape[2]
-        non_zero_elements = sum_flat(mask) * n_entries
-        mse_loss_val = loss / non_zero_elements
-        print('old', mse_loss_val)
-        raise Exception('stop')
         return mse_loss_val
 
 
