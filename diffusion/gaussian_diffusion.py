@@ -214,10 +214,10 @@ class GaussianDiffusion:
         left_hand_loss = self.l2_loss(a_left_hand, b_left_hand)
         face_loss = self.l2_loss(a_face, b_face)
         # normalize losses based on number of keypoints
-        pose_loss = (pose_loss / 132) * 100
-        right_hand_loss = (right_hand_loss / 63) * 100
-        left_hand_loss = (left_hand_loss / 63) * 100 
-        face_loss = (face_loss / 1404) * 100
+        pose_loss = (pose_loss / 132) * 1000
+        right_hand_loss = (right_hand_loss / 63) * 1000
+        left_hand_loss = (left_hand_loss / 63) * 1000
+        face_loss = (face_loss / 1404) * 1000
         loss = torch.concat((pose_loss, right_hand_loss, left_hand_loss, face_loss), dim=1)
         loss = sum_flat(loss * mask.float())  # gives \sigma_euclidean over unmasked elements
         n_entries = a.shape[1] * a.shape[2]
