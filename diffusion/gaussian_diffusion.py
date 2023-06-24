@@ -201,8 +201,7 @@ class GaussianDiffusion:
     def masked_l2(self, a, b, mask):
         # assuming a.shape == b.shape == bs, J, Jdim, seqlen
         # assuming mask.shape == bs, 1, 1, seqlen
-        print(a.shape)
-        print(b.shape)
+        print(mask.shape)
         raise Exception("Done")
         loss = self.l2_loss(a, b)
         loss = sum_flat(loss * mask.float())  # gives \sigma_euclidean over unmasked elements
