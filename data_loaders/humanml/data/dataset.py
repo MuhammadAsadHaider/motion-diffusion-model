@@ -747,8 +747,8 @@ class HumanML3D(data.Dataset):
 
         if mode == 'gt':
             # used by T2M models (including evaluators)
-            self.mean = np.load(pjoin(opt.meta_dir, f'{opt.dataset_name}_mean.npy'))
-            self.std = np.load(pjoin(opt.meta_dir, f'{opt.dataset_name}_std.npy'))
+            self.mean = np.load(pjoin(opt.data_root, 'Mean.npy'))
+            self.std = np.load(pjoin(opt.data_root, 'Std.npy'))
         elif mode in ['train', 'eval', 'text_only']:
             # used by our models
             self.mean = np.load(pjoin(opt.data_root, 'Mean.npy'))
