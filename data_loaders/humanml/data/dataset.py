@@ -130,7 +130,7 @@ class Text2MotionDataset(data.Dataset):
         self.max_length = length
 
     def inv_transform(self, data):
-        return data * self.std + self.mean
+        return data #* self.std + self.mean
 
     def __len__(self):
         return len(self.data_dict) - self.pointer
@@ -198,7 +198,7 @@ class Text2MotionDataset(data.Dataset):
             motion = motion[idx:idx+m_length]
 
         "Z Normalization"
-        motion = (motion - self.mean) / self.std
+        motion = motion #(motion - self.mean) / self.std
 
         return word_embeddings, pos_one_hots, caption, sent_len, motion, m_length
 
@@ -289,7 +289,7 @@ class Text2MotionDatasetV2(data.Dataset):
         self.max_length = length
 
     def inv_transform(self, data):
-        return data * self.std + self.mean
+        return data #* self.std + self.mean
 
     def __len__(self):
         return len(self.data_dict) - self.pointer
@@ -338,7 +338,7 @@ class Text2MotionDatasetV2(data.Dataset):
         motion = motion[idx:idx+m_length]
 
         "Z Normalization"
-        motion = (motion - self.mean) / self.std
+        motion = motion #(motion - self.mean) / self.std
 
         if m_length < self.max_motion_length:
             motion = np.concatenate([motion,
@@ -434,7 +434,7 @@ class Text2MotionDatasetBaseline(data.Dataset):
         self.max_length = length
 
     def inv_transform(self, data):
-        return data * self.std + self.mean
+        return data #* self.std + self.mean
 
     def __len__(self):
         return len(self.data_dict) - self.pointer
@@ -491,8 +491,8 @@ class Text2MotionDatasetBaseline(data.Dataset):
         tgt_motion = motion[s_idx: s_idx + self.max_length]
 
         "Z Normalization"
-        src_motion = (src_motion - self.mean) / self.std
-        tgt_motion = (tgt_motion - self.mean) / self.std
+        src_motion = src_motion #(src_motion - self.mean) / self.std
+        tgt_motion = tgt_motion #(tgt_motion - self.mean) / self.std
 
         if m_length < self.max_motion_length:
             src_motion = np.concatenate([src_motion,
@@ -558,7 +558,7 @@ class MotionDatasetV2(data.Dataset):
         print("Total number of motions {}, snippets {}".format(len(self.data), self.cumsum[-1]))
 
     def inv_transform(self, data):
-        return data * self.std + self.mean
+        return data #* self.std + self.mean
 
     def __len__(self):
         return self.cumsum[-1]
@@ -572,7 +572,7 @@ class MotionDatasetV2(data.Dataset):
             idx = 0
         motion = self.data[motion_id][idx:idx+self.opt.window_size]
         "Z Normalization"
-        motion = (motion - self.mean) / self.std
+        motion = motion #(motion - self.mean) / self.std
 
         return motion
 
@@ -612,7 +612,7 @@ class RawTextDataset(data.Dataset):
         return word_list, pos_list
 
     def inv_transform(self, data):
-        return data * self.std + self.mean
+        return data #* self.std + self.mean
 
     def __len__(self):
         return len(self.data_dict)
@@ -705,7 +705,7 @@ class TextOnlyDataset(data.Dataset):
         self.name_list = new_name_list
 
     def inv_transform(self, data):
-        return data * self.std + self.mean
+        return data #* self.std + self.mean
 
     def __len__(self):
         return len(self.data_dict)
