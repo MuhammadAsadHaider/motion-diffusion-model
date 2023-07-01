@@ -27,7 +27,7 @@ INITIAL_LOG_LOSS_SCALE = 20.0
 
 
 class TrainLoop:
-    def __init__(self, args, train_platform, model, diffusion, data):
+    def __init__(self, args, train_platform, model, diffusion, data, val_data):
         self.args = args
         self.dataset = args.dataset
         self.train_platform = train_platform
@@ -35,6 +35,7 @@ class TrainLoop:
         self.diffusion = diffusion
         self.cond_mode = model.cond_mode
         self.data = data
+        self.val_data = val_data
         self.batch_size = args.batch_size
         self.microbatch = args.batch_size  # deprecating this option
         self.lr = args.lr
@@ -163,7 +164,21 @@ class TrainLoop:
                 self.step += 1
             if not (not self.lr_anneal_steps or self.step + self.resume_step < self.lr_anneal_steps):
                 break
-        print('temp: ', temp)
+            if epoch % 10 == 0:
+                # compute loss on validation set
+                val_losses = []
+                for val_data in self.val_data:
+                    if val_data is None:
+                        continue
+                    val_motion, val_cond = val_data
+
+                    val_motion = val_motion.to(self.device)
+                    val_cond['y'] = {key: val.to(self.device) if torch.is_tensor(val) else val for key, val in val_cond['y'].items()}
+
+                    val_loss = self.val_loss(val_motion, val_cond)
+                    val_losses.append(val_loss.item())
+                print('Validation loss: ', np.mean(val_losses))
+                    
         # Save the last checkpoint if it wasn't already saved.
         if (self.step - 1) % self.save_interval != 0:
             self.save()
@@ -214,6 +229,34 @@ class TrainLoop:
         self.mp_trainer.optimize(self.opt)
         self._anneal_lr()
         self.log_step()
+    
+    def val_loss(self, batch, cond):
+        for i in range(0, batch.shape[0], self.microbatch):
+            # Eliminates the microbatch feature
+            assert i == 0
+            assert self.microbatch == self.batch_size
+            micro = batch
+            micro_cond = cond
+            last_batch = (i + self.microbatch) >= batch.shape[0]
+            t, weights = self.schedule_sampler.sample(micro.shape[0], dist_util.dev())
+
+            compute_losses = functools.partial(
+                self.diffusion.training_losses,
+                self.ddp_model,
+                micro,  # [bs, ch, image_size, image_size]
+                t,  # [bs](int) sampled timesteps
+                model_kwargs=micro_cond,
+                dataset=self.data.dataset
+            )
+
+            if last_batch or not self.use_ddp:
+                losses = compute_losses()
+            else:
+                with self.ddp_model.no_sync():
+                    losses = compute_losses()
+
+            loss = (losses["loss"] * weights).mean()
+            return loss
 
     def forward_backward(self, batch, cond):
         self.mp_trainer.zero_grad()

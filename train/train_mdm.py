@@ -34,7 +34,7 @@ def main():
 
     print("creating data loader...")
     data = get_dataset_loader(name=args.dataset, batch_size=args.batch_size, num_frames=args.num_frames)
-
+    val_data = get_dataset_loader(name=args.dataset, batch_size=args.batch_size, num_frames=args.num_frames, split='val')
     print("creating model and diffusion...")
     model, diffusion = create_model_and_diffusion(args, data)
     model.to(dist_util.dev())
@@ -42,7 +42,7 @@ def main():
 
     print('Total params: %.2fM' % (sum(p.numel() for p in model.parameters_wo_clip()) / 1000000.0))
     print("Training...")
-    TrainLoop(args, train_platform, model, diffusion, data).run_loop()
+    TrainLoop(args, train_platform, model, diffusion, data, val_data).run_loop()
     train_platform.close()
 
 if __name__ == "__main__":
