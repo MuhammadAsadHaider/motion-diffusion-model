@@ -41,7 +41,7 @@ class Text2MotionDataset(data.Dataset):
         for name in tqdm(id_list):
             try:
                 motion = np.load(pjoin(opt.motion_dir, name + '.npy'))
-                if (len(motion)) < min_motion_len or (len(motion) >= 150):
+                if (len(motion)) < min_motion_len or (len(motion) >= 250):
                     continue
                 text_data = []
                 flag = False
@@ -226,7 +226,7 @@ class Text2MotionDatasetV2(data.Dataset):
         for name in tqdm(id_list):
             try:
                 motion = np.load(pjoin(opt.motion_dir, name + '.npy'))
-                if (len(motion)) < min_motion_len or (len(motion) >= 150):
+                if (len(motion)) < min_motion_len or (len(motion) >= 250):
                     continue
                 text_data = []
                 flag = False
@@ -371,7 +371,7 @@ class Text2MotionDatasetBaseline(data.Dataset):
         for name in tqdm(id_list):
             try:
                 motion = np.load(pjoin(opt.motion_dir, name + '.npy'))
-                if (len(motion)) < min_motion_len or (len(motion) >= 150):
+                if (len(motion)) < min_motion_len or (len(motion) >= 250):
                     continue
                 text_data = []
                 flag = False
