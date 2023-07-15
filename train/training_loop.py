@@ -128,6 +128,7 @@ class TrainLoop:
     def run_loop(self):
         print(self.num_epochs)
         temp = 0
+        min_val_loss = 1000000
         for epoch in range(self.num_epochs):
             print(f'Starting epoch {epoch}')
             for data in self.data:
@@ -164,7 +165,7 @@ class TrainLoop:
                 self.step += 1
             if not (not self.lr_anneal_steps or self.step + self.resume_step < self.lr_anneal_steps):
                 break
-            if epoch % 10 == 0:
+            if epoch % 5 == 0:
                 # compute loss on validation set
                 val_losses = []
                 for val_data in self.val_data:
@@ -178,6 +179,12 @@ class TrainLoop:
                     val_loss = self.val_loss(val_motion, val_cond)
                     val_losses.append(val_loss.item())
                 print('Validation loss: ', np.mean(val_losses))
+                if np.mean(val_losses) < min_val_loss:
+                    min_val_loss = np.mean(val_losses)
+                    self.save()
+                # Run for a finite amount of time in integration tests.
+                if os.environ.get("DIFFUSION_TRAINING_TEST", "") and self.step > 0:
+                    return
                     
         # Save the last checkpoint if it wasn't already saved.
         if (self.step - 1) % self.save_interval != 0:
