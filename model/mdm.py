@@ -241,7 +241,12 @@ class InputProcess(nn.Module):
         self.data_rep = data_rep
         self.input_feats = input_feats
         self.latent_dim = latent_dim
-        self.poseEmbedding = nn.Linear(self.input_feats, self.latent_dim)
+        self.latent_dim_part = self.latent_dim // 3
+        self.latent_dim_pose_part = self.latent_dim_part + self.latent_dim - (self.latent_dim_part * 3)
+        self.right_hand_embedding = nn.Linear(63, self.latent_dim_part)
+        self.left_hand_embedding = nn.Linear(63, self.latent_dim_part)
+        self.pose_embedding = nn.Linear(132, self.latent_dim_pose_part)
+        # self.poseEmbedding = nn.Linear(self.input_feats, self.latent_dim)
         if self.data_rep == 'rot_vel':
             self.velEmbedding = nn.Linear(self.input_feats, self.latent_dim)
 
@@ -250,7 +255,14 @@ class InputProcess(nn.Module):
         x = x.permute((3, 0, 1, 2)).reshape(nframes, bs, njoints*nfeats)
 
         if self.data_rep in ['rot6d', 'xyz', 'hml_vec']:
-            x = self.poseEmbedding(x)  # [seqlen, bs, d]
+            # x = self.poseEmbedding(x)  # [seqlen, bs, d]
+            pose = x[:, :, :132]
+            right_hand = x[:, :, 132:195]
+            left_hand = x[:, :, 195:]
+            pose = self.pose_embedding(pose)
+            right_hand = self.right_hand_embedding(right_hand)
+            left_hand = self.left_hand_embedding(left_hand)
+            x = torch.cat((pose, right_hand, left_hand), axis=-1)
             return x
         elif self.data_rep == 'rot_vel':
             first_pose = x[[0]]  # [1, bs, 150]
