@@ -26,7 +26,7 @@ def main():
     name = os.path.basename(os.path.dirname(args.model_path))
     niter = os.path.basename(args.model_path).replace('model', '').replace('.pt', '')
     max_frames = 196 if args.dataset in ['kit', 'humanml'] else 60
-    max_frames = 150 if args.dataset in ['h2s'] else 60
+    max_frames = 250 if args.dataset in ['h2s'] else 60
     fps = 12.5 if args.dataset == 'kit' else 20
     fps = 24 if args.dataset == 'h2s' else fps
     n_frames = min(max_frames, int(args.motion_length*fps))
