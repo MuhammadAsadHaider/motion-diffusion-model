@@ -159,6 +159,11 @@ class TrainLoop:
                     self.evaluate()
                     self.model.train()
 
+                    # print learning rate
+                    for param_group in self.opt.param_groups:
+                        print('Learning rate: {}'.format(param_group['lr']))
+                        
+
                     # Run for a finite amount of time in integration tests.
                     if os.environ.get("DIFFUSION_TRAINING_TEST", "") and self.step > 0:
                         return

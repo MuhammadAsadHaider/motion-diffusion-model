@@ -196,7 +196,7 @@ class GaussianDiffusion:
             / (1.0 - self.alphas_cumprod)
         )
 
-        self.l2_loss = lambda a, b: (a - b) ** 2  # th.nn.MSELoss(reduction='none')  # must be None for handling mask later on.
+        self.l2_loss = lambda a, b: abs(a - b) # th.nn.MSELoss(reduction='none')  # must be None for handling mask later on.
 
     def masked_l2(self, a, b, mask):
         # assuming a.shape == b.shape == bs, J, Jdim, seqlen
