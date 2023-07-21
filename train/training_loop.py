@@ -307,6 +307,7 @@ class TrainLoop:
             return
         frac_done = (self.step + self.resume_step) / self.lr_anneal_steps
         lr = self.lr * (1 - frac_done)
+        print(f"annealing lr to {lr}")
         for param_group in self.opt.param_groups:
             param_group["lr"] = lr
 
