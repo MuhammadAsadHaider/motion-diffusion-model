@@ -42,7 +42,7 @@ def get_model_args(args, data):
         nfeats = 1
     elif args.dataset == 'h2s':
         data_rep = 'hml_vec'
-        njoints = 258
+        njoints = 225
         nfeats = 1
 
     return {'modeltype': '', 'njoints': njoints, 'nfeats': nfeats, 'num_actions': num_actions,
