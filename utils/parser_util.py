@@ -134,7 +134,7 @@ def add_training_options(parser):
                        help="Training will stop after the specified number of steps.")
     group.add_argument("--num_frames", default=60, type=int,
                        help="Limit for the maximal number of frames. In HumanML3D and KIT this field is ignored.")
-    group.add_argument("--resume_checkpoint", default="/home/masad/slpsg6/motion-diffusion-model/save/no_face_3/model001690000.pt", type=str,
+    group.add_argument("--resume_checkpoint", default="", type=str,
                        help="If not empty, will start from the specified checkpoint (path to model###.pt file).")
     group.add_argument("--custom_eval", default=False, type=bool,
                        help="Rval during training")

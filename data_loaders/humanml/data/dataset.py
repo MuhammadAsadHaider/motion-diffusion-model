@@ -211,7 +211,7 @@ class Text2MotionDatasetV2(data.Dataset):
         self.max_length = 20
         self.pointer = 0
         self.max_motion_length = opt.max_motion_length
-        min_motion_len = 20 if self.opt.dataset_name =='t2m' else 24
+        # min_motion_len = 20 if self.opt.dataset_name =='t2m' else 24
 
         data_dict = {}
         id_list = []
@@ -226,8 +226,8 @@ class Text2MotionDatasetV2(data.Dataset):
         for name in tqdm(id_list):
             try:
                 motion = np.load(pjoin(opt.motion_dir, name + '.npy'))
-                if (len(motion)) < min_motion_len or (len(motion) >= 150):
-                    continue
+                # if (len(motion)) < min_motion_len or (len(motion) >= 150):
+                #     continue
                 text_data = []
                 flag = False
                 with cs.open(pjoin(opt.text_dir, name + '.txt')) as f:
@@ -249,8 +249,8 @@ class Text2MotionDatasetV2(data.Dataset):
                         else:
                             try:
                                 n_motion = motion[int(f_tag*20) : int(to_tag*20)]
-                                if (len(n_motion)) < min_motion_len or (len(n_motion) >= 200):
-                                    continue
+                                # if (len(n_motion)) < min_motion_len or (len(n_motion) >= 200):
+                                #     continue
                                 new_name = random.choice('ABCDEFGHIJKLMNOPQRSTUVW') + '_' + name
                                 while new_name in data_dict:
                                     new_name = random.choice('ABCDEFGHIJKLMNOPQRSTUVW') + '_' + name
@@ -325,25 +325,29 @@ class Text2MotionDatasetV2(data.Dataset):
         word_embeddings = np.concatenate(word_embeddings, axis=0)
 
         # Crop the motions in to times of 4, and introduce small variations
-        if self.opt.unit_length < 10:
-            coin2 = np.random.choice(['single', 'single', 'double'])
-        else:
-            coin2 = 'single'
+        # if self.opt.unit_length < 10:
+        #     coin2 = np.random.choice(['single', 'single', 'double'])
+        # else:
+        #     coin2 = 'single'
 
-        if coin2 == 'double':
-            m_length = (m_length // self.opt.unit_length - 1) * self.opt.unit_length
-        elif coin2 == 'single':
-            m_length = (m_length // self.opt.unit_length) * self.opt.unit_length
-        idx = random.randint(0, len(motion) - m_length)
-        motion = motion[idx:idx+m_length]
+        # if coin2 == 'double':
+        #     m_length = (m_length // self.opt.unit_length - 1) * self.opt.unit_length
+        # elif coin2 == 'single':
+        #     m_length = (m_length // self.opt.unit_length) * self.opt.unit_length
+        # idx = random.randint(0, len(motion) - m_length)
+        # motion = motion[idx:idx+m_length]
 
         "Z Normalization"
         motion = (motion - self.mean) / self.std
 
         if m_length < self.max_motion_length:
+            # motion = np.concatenate([motion,
+            #                          np.zeros((self.max_motion_length - m_length, motion.shape[1]))
+            #                          ], axis=0)
+            # repeat the motion from start 
             motion = np.concatenate([motion,
-                                     np.zeros((self.max_motion_length - m_length, motion.shape[1]))
-                                     ], axis=0)
+                                        motion[:self.max_motion_length - m_length]
+                                        ], axis=0)
         # print(word_embeddings.shape, motion.shape)
         # print(tokens)
         return word_embeddings, pos_one_hots, caption, sent_len, motion, m_length, '_'.join(tokens)
