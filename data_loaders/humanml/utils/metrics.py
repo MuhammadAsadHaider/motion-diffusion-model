@@ -72,6 +72,7 @@ def calculate_activation_statistics(activations):
 
 def calculate_diversity(activation, diversity_times):
     assert len(activation.shape) == 2
+    print("activation.shape[0]" + str(activation.shape[0]))
     assert activation.shape[0] > diversity_times
     num_samples = activation.shape[0]
 
