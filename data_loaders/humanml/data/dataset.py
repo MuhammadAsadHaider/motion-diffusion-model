@@ -765,8 +765,8 @@ class HumanML3D(data.Dataset):
             self.std_for_eval = np.load(pjoin(opt.meta_dir, f'{opt.dataset_name}_std.npy'))
         
         if split == 'val':
-            self.mean = np.load(pjoin(opt.data_root, 'Mean-val.npy'))
-            self.std = np.load(pjoin(opt.data_root, 'Std-val.npy'))
+            self.mean = np.load(pjoin(opt.data_root, 'Mean.npy'))
+            self.std = np.load(pjoin(opt.data_root, 'Std.npy'))
 
         self.split_file = pjoin(opt.data_root, f'{split}.txt')
         if mode == 'text_only':
