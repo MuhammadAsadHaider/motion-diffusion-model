@@ -282,8 +282,6 @@ if __name__ == '__main__':
         print("len(batch): ", len(batch))
         a,b = batch
         print("a.shape: ", a.shape)
-        print("b.shape: ", b.shape)
-        print(a)
         print(b)
         print("SUCCESS")
         raise ValueError()
