@@ -278,12 +278,12 @@ if __name__ == '__main__':
     gen_loader = get_dataset_loader(name=args.dataset, batch_size=args.batch_size, num_frames=None, split=split, hml_mode='train')
     num_actions = gen_loader.dataset.num_actions
 
-    for idx, batch in enumerate(gt_loader):
-        print("len(batch): ", len(batch))
-        word_embeddings, pos_one_hots, _, sent_lens, motions, m_lens, _  = batch
+    # for idx, batch in enumerate(gt_loader):
+    #     print("len(batch): ", len(batch))
+    #     word_embeddings, pos_one_hots, _, sent_lens, motions, m_lens, _  = batch
         
-        print("SUCCESS")
-        raise ValueError()
+    #     print("SUCCESS")
+    #     raise ValueError()
 
 
     logger.log("Creating model and diffusion...")
