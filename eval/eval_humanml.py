@@ -280,9 +280,8 @@ if __name__ == '__main__':
 
     for idx, batch in enumerate(gt_loader):
         print("len(batch): ", len(batch))
-        a,b = batch
-        print("a.shape: ", a.shape)
-        print(b)
+        word_embeddings, pos_one_hots, _, sent_lens, motions, m_lens, _  = batch
+        
         print("SUCCESS")
         raise ValueError()
 
