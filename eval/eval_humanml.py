@@ -279,7 +279,12 @@ if __name__ == '__main__':
     num_actions = gen_loader.dataset.num_actions
 
     for idx, batch in enumerate(gt_loader):
-        word_embeddings, pos_one_hots, _, sent_lens, motions, m_lens, _ = batch
+        print("len(batch): ", len(batch))
+        a,b = batch
+        print("a.shape: ", a.shape)
+        print("b.shape: ", b.shape)
+        print(a)
+        print(b)
         print("SUCCESS")
         raise ValueError()
 
