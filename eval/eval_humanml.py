@@ -27,7 +27,7 @@ def evaluate_matching_score(eval_wrapper, motion_loaders, file):
         all_size = 0
         matching_score_sum = 0
         top_k_count = 0
-        # print(motion_loader_name)
+        print(motion_loader_name)
         with torch.no_grad():
             for idx, batch in enumerate(motion_loader):
                 word_embeddings, pos_one_hots, _, sent_lens, motions, m_lens, _ = batch
