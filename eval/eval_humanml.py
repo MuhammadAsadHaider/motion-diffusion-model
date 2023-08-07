@@ -278,6 +278,11 @@ if __name__ == '__main__':
     gen_loader = get_dataset_loader(name=args.dataset, batch_size=args.batch_size, num_frames=None, split=split, hml_mode='train')
     num_actions = gen_loader.dataset.num_actions
 
+    for idx, batch in enumerate(gt_loader):
+        print(batch)
+        raise ValueError()
+
+
     logger.log("Creating model and diffusion...")
     model, diffusion = create_model_and_diffusion(args, gen_loader)
 
