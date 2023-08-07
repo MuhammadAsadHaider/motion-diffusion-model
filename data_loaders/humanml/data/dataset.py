@@ -219,7 +219,7 @@ class Text2MotionDatasetV2(data.Dataset):
             for line in f.readlines():
                 id_list.append(line.strip())
         # comment this for full data
-        # id_list = id_list[:200]
+        id_list = id_list[:200]
 
         new_name_list = []
         length_list = []
